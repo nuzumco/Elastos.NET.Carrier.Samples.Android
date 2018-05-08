@@ -1,17 +1,17 @@
 # Elastos.NET.Carrier.Android.Demo
-## Summary
+## 概述
 
-The Demo introduces how to use the Carrier of Elastos’s Android SDK to achieve communication 
-between phones and realizes a simple version of Chat Dapp.
+本Demo介绍了如何用亦来云的Carrier实现android手机间的通信。
+实现了简易版的聊天的Dapp。
 
-## Loading library files
-Download android.sdk-debug.tar.gz from the following website and unzip it, 
-add the extracted files to the app lib path:
+## 加载库文件
+把如下地址的Elastos.NET.Carrier.Android.SDK加载到app的lib路径下
+
 ```
 https://github.com/elastos/Elastos.NET.Carrier.Android.SDK
 ```
 
-The loaded directory structure is as follows:
+加载后的目录结构如下:
 ```
 localhost:libs xuxinlai$ pwd
 /Users/xuxinlai/blockchain/Elastos.NET.Carrier.Android.Demo/app/libs
@@ -26,11 +26,9 @@ localhost:libs xuxinlai$ tree
 └── elacarrier.jar
 ```
 
-## Configure and load NDK
+## 配置和加载ndk
 
-If you have not yet installed NDK, refer to the Android official website to install NDK 
-and add the following configuration in the build.gradle file:
-
+如果没有安装ndk的需要安装ndk，并且在build.gradle文件中加入如下配置
 
 ```
 ndk {
@@ -46,25 +44,23 @@ sourceSets {
 }
 ```
 
-## Initialize Carrier instance and start 
-Before you initialize Carrier, you need to set the related parameters options and handlers, 
-which are an instance of the following classes, respectively.
-
+## 初始化实例
+通过初始化Carrier实例获得用户地址和ID
 ```
-//1.Initialize the Carrier and get the related information
+//1.初始化实例，获得相关信息
 try {
-   //1.1 Initialize the Instance
+   //1.1获得Carrier的实例
    carrierInst = Carrier.getInstance(options, handler);
 
-   //1.2 get the Carrier address
+   //1.2获得Carrier的地址
    carrierAddr = carrierInst.getAddress();
    Log.i(TAG,"address: " + carrierAddr);
 
-   //1.3 get the Carrier user id
+   //1.3获得Carrier的用户ID
    carrierUserID = carrierInst.getUserId();
    Log.i(TAG,"userID: " + carrierUserID);
 
-   //1.4 start the net 
+   //1.4启动网络
    carrierInst.start(1000);
    handler.synch.await();
    Log.i(TAG,"carrier client is ready now");
@@ -74,18 +70,18 @@ try {
 }
 ```
 
-**Don't forget to add related permissions in file AndroidManifest.xml**
+**注意不要忘记设置手机文件权限**
 
 
 ```
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
 
-## Add friend
+## 加好友
 
-Add a friend by calling the function below:，
+通过addFriend增加好友，
 ```
-//2.1 add the friends
+//2.1添加好友
 try {
     Log.i(TAG,"start add Frind");
     carrierInst.addFriend(friendAddr, "auto-accepted");
@@ -95,10 +91,9 @@ try {
 }
 ```
 
-carrier.AcceptFriend(String friendId) function through overwrite the callback function 
-onFriendConnection as below:
+通过onFriendRequest回调函数,通过好友验证
 ```
-//2.2 verify the friends
+//2.2 通过好友验证
 public void onFriendRequest(Carrier carrier, String userId, UserInfo info, String hello) {
     try {
 
@@ -111,10 +106,10 @@ public void onFriendRequest(Carrier carrier, String userId, UserInfo info, Strin
 }
 ```
 
-## Send message to friend
-send Message to friends by the function sendFriendMessage
+## 发送消息
+通过sendFriendMessage给好友发消息
 ```
-//3.1 send the message 
+//3.1发送信息
 try {
     Log.i(TAG,"start send message");
     carrierInst.sendFriendMessage("3uHutUcGb9Sc2VX87bwxuoejX7oDFRc2FuUkyYHxbNpG", "hello e");
@@ -124,9 +119,9 @@ try {
 }
 ```
 
-receive the message by the onFriendMessage callback function as below:
+通过onFriendMessage回调函数,获得好友发送过来的信息
 ```
-//3.2 get the messsage from frined
+//3.2 接受好友信息
 public void onFriendMessage(Carrier carrier,String fromId, String message) {
 
     Log.i(CALLBACK,"address:" + fromId + "connection changed to: " + message);
